@@ -1,0 +1,2 @@
+APP_STL := gnustl_static
+APP_CPPFLAGS := -frtti -DDEBUG -DCOCOS2D_DEBUG=1
