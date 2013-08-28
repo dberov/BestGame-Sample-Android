@@ -9,6 +9,18 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="17"/>
 
+    <!-- web view -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- checking data network connection status -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    
+    <!-- used for requesting the MAC address for generating the device UID -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    
+    <!-- used for auto-login fallback -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+
     <supports-screens
         android:anyDensity="true"
         android:xlargeScreens="true"
@@ -41,6 +53,12 @@
             </intent-filter>
             
         </activity>
+        
+        <activity
+            android:name="org.grantoo.lib.propeller.PropellerSDKActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="landscape"/>
         
     </application>
 
