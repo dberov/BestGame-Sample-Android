@@ -57,14 +57,17 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // set FPS. the default value is 1.0/60 if you don't call this
     pDirector->setAnimationInterval(1.0 / 60);
 
+    // construct social provider auxiliary data to pass to initialization
+    const char* auxData = "{\"social\":[{\"provider\":\"<social_provider>\",\"cap\":[\"login\",\"invite\",\"share\"]}]}";
+
 #ifdef DEBUG
     // This is for the test startup
     JNIBridge::useSandbox();
     // use the development game key/secret pair
-    JNIBridge::initialize("50ac1a38f6aae30200000001", "c38b6697-b453-99c6-bc59-b50f0eca347f");
+    JNIBridge::initialize("50ac1a38f6aae30200000001", "c38b6697-b453-99c6-bc59-b50f0eca347f", auxData);
 #else
     // use the production game key/secret pair
-    JNIBridge::initialize("50b665d167379a020000000b", "a918a013-842e-ceb9-19ec-c0f981894d85");
+    JNIBridge::initialize("50b665d167379a020000000b", "a918a013-842e-ceb9-19ec-c0f981894d85", auxData);
 #endif
 
     JNIBridge::instance()->setOrientation("landscape");

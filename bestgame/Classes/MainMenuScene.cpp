@@ -304,3 +304,61 @@ void MainMenuScene::sdkFailed(JNIEnv* env, jobject context, jstring message, job
 	CCLOG("sdkFailed");
 	startCocos();
 }
+
+bool MainMenuScene::sdkSocialLogin(JNIEnv* env, jobject context, jboolean allowCache) {
+	const char* result = NULL;
+	bool succeeded = false;
+
+	// handle social login
+
+	if (succeeded) {
+		std::string provider = "";
+		std::string email = "";
+		std::string id = "";
+		std::string nickname = "";
+		std::string token = "";
+
+		// retrieve social login data
+
+		std::string json = "";
+		json += '{';
+		json += "\"provider\":\"" + provider + "\"";
+		json += ",\"email\":\"" + email + "\"";
+
+		if (!id.empty()) {
+			json += ",\"id\":\"" + id + "\"";
+		}
+
+		if (!nickname.empty()) {
+			json += ",\"nickname\":\"" + nickname + "\"";
+		}
+
+		if (!token.empty()) {
+			json += ",\"token\":\"" + token + "\"";
+		}
+
+		json += '}';
+
+		result = json.c_str();
+	}
+
+	JNIBridge::instance()->sdkSocialLoginCompleted(result);
+
+	return true;
+}
+
+bool MainMenuScene::sdkSocialInvite(JNIEnv* env, jobject context, jstring subject, jstring longMessage, jstring shortMessage, jstring linkUrl) {
+	// handle social invite
+
+    JNIBridge::instance()->sdkSocialInviteCompleted();
+
+	return true;
+}
+
+bool MainMenuScene::sdkSocialShare(JNIEnv* env, jobject context, jstring subject, jstring longMessage, jstring shortMessage, jstring linkUrl) {
+	// handle social share
+
+    JNIBridge::instance()->sdkSocialShareCompleted();
+
+	return true;
+}

@@ -5,6 +5,7 @@ import org.grantoo.lib.propeller.PropellerSDKListener;
 import org.grantoo.lib.propeller.PropellerSDKUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -19,9 +20,10 @@ public class NativeBridge extends PropellerSDKListener {
 	 * 
 	 * @param gameId Game ID to initialize the Propeller SDK with.
 	 * @param gameSecret Game secret token to initialize the Propeller SDK with.
+	 * @param auxData String encoded JSON of auxiliary data.
 	 */
-	public static void initialize(String gameId, String gameSecret) {
-		PropellerSDK.initialize(gameId, gameSecret);
+	public static void initialize(String gameId, String gameSecret, String auxData) {
+		PropellerSDK.initialize(gameId, gameSecret, auxData);
 	}
 
 	/***************************************************************************
@@ -133,6 +135,35 @@ public class NativeBridge extends PropellerSDKListener {
 	}
 
 	/***************************************************************************
+	 * Notifies the Propeller SDK that the requested social login has completed.
+	 * 
+	 * @param result Social login result.
+	 * @return True if the result was handled, false otherwise.
+	 */
+	public boolean sdkSocialLoginCompleted(String result) {
+		return PropellerSDK.instance().sdkSocialLoginCompleted(result);
+	}
+
+	/***************************************************************************
+	 * Notifies the Propeller SDK that the requested social invite has
+	 * completed.
+	 * 
+	 * @return True if the result was handled, false otherwise.
+	 */
+	public boolean sdkSocialInviteCompleted() {
+		return PropellerSDK.instance().sdkSocialInviteCompleted();
+	}
+
+	/***************************************************************************
+	 * Notifies the Propeller SDK that the requested social share has completed.
+	 * 
+	 * @return True if the result was handled, false otherwise.
+	 */
+	public boolean sdkSocialShareCompleted() {
+		return PropellerSDK.instance().sdkSocialShareCompleted();
+	}
+
+	/***************************************************************************
 	 * Sync the current users challenge counts
 	 */
 	public void syncChallengeCounts() {
@@ -205,6 +236,49 @@ public class NativeBridge extends PropellerSDKListener {
 	}
 
 	/***************************************************************************
+	 * Called when the Propeller SDK wants to perform a social login.
+	 * 
+	 * @param context Calling context.
+	 * @param allowCache True if cached login credentials can be used, false
+	 *        otherwise.
+	 * @return True if the social login was performed, false otherwise.
+	 */
+	@Override
+	public boolean sdkSocialLogin(Context context, boolean allowCache) {
+		return nativeSdkSocialLogin(allowCache);
+	}
+
+	/***************************************************************************
+	 * Called when the Propeller SDK wants to perform a social invite.
+	 * 
+	 * @param context Calling context.
+	 * @param subject The subject string for the invite.
+	 * @param longMessage The message to invite with (long version).
+	 * @param shortMessage The message to invite with (short version).
+	 * @param linkUrl The URL for where the game can be obtained.
+	 * @return True if the social invite was performed, false otherwise.
+	 */
+	@Override
+	public boolean sdkSocialInvite(Context context, String subject, String longMessage, String shortMessage, String linkUrl) {
+		return nativeSdkSocialInvite(subject, longMessage, shortMessage, linkUrl);
+	}
+
+	/***************************************************************************
+	 * Called when the Propeller SDK wants to perform a social share.
+	 * 
+	 * @param context Calling context.
+	 * @param subject The subject string for the share.
+	 * @param longMessage The message to share with (long version).
+	 * @param shortMessage The message to share with (short version).
+	 * @param linkUrl The URL for where the game can be obtained.
+	 * @return True if the social share was performed, false otherwise.
+	 */
+	@Override
+	public boolean sdkSocialShare(Context context, String subject, String longMessage, String shortMessage, String linkUrl) {
+		return nativeSdkSocialShare(subject, longMessage, shortMessage, linkUrl);
+	}
+
+	/***************************************************************************
 	 * Notifies the native libraries that the Propeller SDK completed with exit.
 	 */
 	public native void nativeSdkCompletedWithExit();
@@ -234,5 +308,37 @@ public class NativeBridge extends PropellerSDKListener {
 	 * bridge.
 	 */
 	public native void deallocateJNIBridge();
+
+	/***************************************************************************
+	 * Notifies the native libraries that the Propeller SDK social login event
+	 * occurred.
+	 * 
+	 * @param allowCache Flags whether or not using cached login credentials can
+	 *        be used to login the user. If allowCache is false then cached
+	 *        login credentials should not be used (e.g. switching users)
+	 */
+	public native boolean nativeSdkSocialLogin(boolean allowCache);
+
+	/***************************************************************************
+	 * Notifies the native libraries that the Propeller SDK social invite event
+	 * occurred.
+	 * 
+	 * @param subject The subject string for the invite.
+	 * @param longMessage The message to invite with (long version).
+	 * @param shortMessage The message to invite with (short version).
+	 * @param linkUrl The URL for where the game can be obtained.
+	 */
+	public native boolean nativeSdkSocialInvite(String subject, String longMessage, String shortMessage, String linkUrl);
+
+	/***************************************************************************
+	 * Notifies the native libraries that the Propeller SDK social share event
+	 * occurred.
+	 * 
+	 * @param subject The subject string for the share.
+	 * @param longMessage The message to share with (long version).
+	 * @param shortMessage The message to share with (short version).
+	 * @param linkUrl The URL for where the game can be obtained.
+	 */
+	public native boolean nativeSdkSocialShare(String subject, String longMessage, String shortMessage, String linkUrl);
 
 }
